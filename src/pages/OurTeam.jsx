@@ -103,7 +103,7 @@ const OurTeam = () => {
         { name: "Rupa", role: "Club Alumni", img: "rupa.jpg" }
     ];
 
-    const [activeSection, setActiveSection] = useState('members'); // 'members' or 'alumni'
+    const [activeSection, setActiveSection] = useState('members'); // 'Members' or 'Alumni'
 
     return (
         <div className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
