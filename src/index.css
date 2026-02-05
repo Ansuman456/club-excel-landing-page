@@ -11,7 +11,6 @@ body {
   background-color: #020202;
   color: #ffffff;
   overflow-x: hidden;
-  cursor: none;
 }
 
 .font-mono {
@@ -30,8 +29,11 @@ body {
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s, background 0.3s;
+  will-change: transform;
+  transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    height 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    background 0.3s ease,
+    border 0.3s ease;
   mix-blend-mode: difference;
 }
 
@@ -42,6 +44,18 @@ body {
   mix-blend-mode: normal;
 }
 
+/* Performance Optimizations */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
+#hero,
+#navigation {
+  content-visibility: visible;
+  /* Ensure hero is always ready */
+}
+
 /* Background Canvas */
 #bg-canvas {
   position: fixed;
@@ -50,46 +64,63 @@ body {
   width: 100%;
   height: 100%;
   z-index: -1;
-  opacity: 0.4;
+  opacity: 0.3;
+  /* Slightly lower for better contrast and paint speed */
+  pointer-events: none;
+  transform: translateZ(0);
+  /* Force layer creation */
+}
+
+/* Simplified Glassmorphism */
+.backdrop-blur-md {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  /* Fallback for low-end browsers where filter is too heavy */
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 /* Portal/Tilt Effects */
 .portal-container {
   perspective: 1000px;
   overflow: hidden;
+  will-change: transform;
 }
 
 .portal-window {
   transform-style: preserve-3d;
-  transition: transform 0.1s linear;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
 }
 
 .tilt-card {
   transform-style: preserve-3d;
   transform: perspective(1000px);
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    border 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .tilt-inner {
   transform: translateZ(30px);
-}
-
-.tilt-content {
-  transform: translateZ(20px);
+  pointer-events: none;
+  /* Only the parent should handle mouse events */
 }
 
 /* Utilities */
 .bg-grid-small {
-  background-image: linear-gradient(to right, #333 1px, transparent 1px),
-    linear-gradient(to bottom, #333 1px, transparent 1px);
-  background-size: 20px 20px;
-  mask-image: radial-gradient(ellipse at center, black 40%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 70%);
-  opacity: 0.1;
+  background-image: linear-gradient(to right, #222 1px, transparent 1px),
+    linear-gradient(to bottom, #222 1px, transparent 1px);
+  background-size: 30px 30px;
+  /* Larger grid = less tiling/painting */
+  mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+  opacity: 0.08;
 }
 
 .code-window {
-  background: #0a0a0a;
-  border: 1px solid #222;
+  background: #080808;
+  border: 1px solid #1a1a1a;
   border-radius: 8px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
@@ -124,5 +155,5 @@ body {
 
 /* Aura Background */
 .aura-glow {
-  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
 }
